@@ -3,21 +3,10 @@
             [smart-fhir-clj-client.request :as req]
             [clj-hl7-fhir.core :as fhir-client]))
 
-(def client-id (atom nil))
-(def client-secret (atom nil))
-(def base-url (atom nil))
-(def auth-url (atom nil))
-(def token-url (atom nil))
-(def supported-resource-types (atom nil))
-(def client-type (atom nil))
-(def initialized (atom nil))
+(def conformance-map (atom {}))
 
 (defn get-metadata
   "return an map of SMART FHIR metadata details include authorize , token endpoint URLs and resource search details."
-  ([]
-   (if-not @base-url
-     (log/error "base-url is empty. Use initialize fn to initialize with basic details")
-     (get-metadata @base-url)))
   ([url]
    (if-not url
      (log/error "Metadata URL is Empty!")
@@ -54,21 +43,25 @@
   "sets up variables base_uri,supported resource types authorization url , token url and mode(public or confidential)"
  ([base-url-request client-id-request client-secret-request]
   (if (or (nil? base-url-request) (nil? client-id-request))  "metadata-url and client-id-request are required")
-  (when (nil? @initialized)
+  (when (nil? ((keyword client-id-request) @conformance-map))
     (locking
       (let [meta-data (get-metadata base-url-request)
-             conformance (get-data-from-conformance meta-data)]
-         (reset! base-url base-url-request)
-         (reset! client-id client-id-request)
-         (reset! client-secret client-secret-request)
-         (reset! auth-url (:authorize conformance))
-         (reset! token-url (:token conformance))
-         (reset! supported-resource-types (:resource conformance))
-         (reset! client-type (if client-secret-request "client-confidential-symmetric" "client-public"))
-         (reset! initialized true))
-      (log/infof "Initialization done. Status: %s " @initialized))))
+            conformance (get-data-from-conformance meta-data)
+            data-map {:base-url base-url-request
+                      :client-id client-id-request
+                      :client-secret client-secret-request
+                      :client-type (if client-secret-request "client-confidential-symmetric" "client-public")
+                      :auth-url (:authorize conformance)
+                      :token-url (:token conformance)
+                      :support-resource-types (:resource conformance)
+                      :initialize-status true}]
+        (swap! conformance-map assoc (keyword client-id-request) data-map))
+      (log/infof "Initialization done for client ID %s" client-id-request))))
+
+
  ([base-url client-id-request]
   (initialize base-url client-id-request nil)))
+
 
 (defn get-initialized-value
   []
@@ -79,9 +72,7 @@
    :token-url @token-url
    :support-resource-types @supported-resource-types
    :initialize-status @initialized})
-   
-   
-   
+
 (defn get-token
   "TODO"
   []
@@ -92,8 +83,7 @@
   "Retrieve a resource by its FHIR resource id. returns Resource or nil if not found."
   ([resource-type resource-id]
    (fhir-client/with-options {:oauth-token (get-token)}
-     (fhir-client/get-resource @base-url resource-type resource-id)))
+                             (fhir-client/get-resource @base-url resource-type resource-id)))
   ([relative-url]
    (fhir-client/with-options {:oauth-token (get-token)}
-     (fhir-client/get-resource @base-url relative-url))))
-   
+                             (fhir-client/get-resource @base-url relative-url))))
