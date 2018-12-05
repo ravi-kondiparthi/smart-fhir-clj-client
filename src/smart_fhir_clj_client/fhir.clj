@@ -1,6 +1,7 @@
 (ns smart-fhir-clj-client.fhir
   (:require [clojure.tools.logging :as log]
-            [smart-fhir-clj-client.request :as req]))
+            [smart-fhir-clj-client.request :as req]
+            [clj-hl7-fhir.core :as fhir-client]))
 
 (def client-id (atom nil))
 (def client-secret (atom nil))
@@ -31,6 +32,7 @@
   [extension-list type]
   (:valueUri (first (filter #(= type (:url %)) extension-list))))
 
+
 (defn- get-data-from-conformance
   "parses metadata to extract oauth and token information"
   [conformance-map]
@@ -46,8 +48,6 @@
         resource (->> (get-in conformance-map [:rest 0 :resource])
                       (mapv #(:type %)))]
     (merge urls {:resource resource})))
-
-
 
 
 (defn initialize
@@ -79,3 +79,21 @@
    :token-url @token-url
    :support-resource-types @supported-resource-types
    :initialize-status @initialized})
+   
+   
+   
+(defn get-token
+  "TODO"
+  []
+  "lJd0Sow_-IFxerXswWfM6ZYjvNV7fkt3ONlvBWTxvLvIuIXoAlkTQXuvph6DMEAqIiwJ1xb4XuUbn8G-gMjvGWL_-8T9it6646nQtSihKYFrkfAoNuLmYVymeSHXdskk")
+
+
+(defn get-resource
+  "Retrieve a resource by its FHIR resource id. returns Resource or nil if not found."
+  ([resource-type resource-id]
+   (fhir-client/with-options {:oauth-token (get-token)}
+     (fhir-client/get-resource @base-url resource-type resource-id)))
+  ([relative-url]
+   (fhir-client/with-options {:oauth-token (get-token)}
+     (fhir-client/get-resource @base-url relative-url))))
+   
