@@ -45,7 +45,7 @@ TBD
 TBD
 
 ### Example 
-TBD
+Run example app with lein. See `example/README.md`.
 
 ## License
 TODO
