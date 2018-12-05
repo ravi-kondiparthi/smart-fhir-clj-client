@@ -1,5 +1,6 @@
 (ns smart-fhir-clj-client.fhir
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]
+            [smart-fhir-clj-client.request :as req]))
 
 (def client-id (atom nil))
 (def client-secret (atom nil))
@@ -45,3 +46,14 @@
 (defn get-value-url-from-extension
   [extension-list type]
   (filter #(= type (:url %)) extension-list))
+
+(defn get-metadata
+  "return an map of SMART FHIR metadata details include authorize , token endpoint URLs and resource search details."
+  ([]
+   (if-not @base-url
+     (log/error "base-url is empty. Use initialize fn to initialize with basic details")
+     (get-metadata (str @base-url "/metadata"))))
+  ([url]
+   (if-not url
+     (log/error "Metadata URL is Empty!")
+     (req/get-json  url {:query-params {:_format "application/json"}}))))
