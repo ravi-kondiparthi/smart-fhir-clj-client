@@ -6,6 +6,5 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [cheshire "5.8.0"]
                  [clj-http "3.7.0"]
-                 [clj-time "0.14.2"]
                  [org.clojure/tools.logging "0.3.1"]
                  [clj-hl7-fhir "0.3.1"]])
