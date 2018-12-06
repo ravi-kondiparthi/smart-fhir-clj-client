@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<title>Get Data</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<style>body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+
+.form-signin {
+    max-width: 700px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}</style>
+
+
+<body>
+<div class="form-signin">
+    <h1><code>smart-fhir-clj-client</code> demo</h1>
+    <h3>Step 3: Get Data</h3>
+    <form class="form-signin" action="/data" method="get">
+        <!--Client Id:<br>-->
+        <!--<input class="form-control" type="text" name="client_id" value={{client-id}}>-->
+        <!--<br>-->
+        OAuth Token:<br>
+        <input class="form-control" type="token" name="token" value={{token}}>
+        <br>
+        Patient Id:<br>
+        <input class="form-control" type="patientid" name="patientid" value={{patient-id}}>
+        <input type="hidden" class="form-control" type="text" name="emr-system" value={{emr-system}}>
+        <!--<br>-->
+        <!--resource:<br>-->
+        <!--<input type="resource" name="resource" value="">-->
+        <!--<select name="resource">-->
+            <!--<option value="Encounter">epic</option>-->
+            <!--<option value="AllergyIntollerance">hspc</option>-->
+        <!--</select>-->
+        <br><br>
+        <b>EHR Data URL: <code>{{emr-data-url}}</code></b>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+</body>
+</html>

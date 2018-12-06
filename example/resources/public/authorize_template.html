@@ -35,13 +35,13 @@
 
 <div class="form-signin">
     <h1> <code>smart-fhir-clj-client</code> demo</h1>
-    <h3>Step 2: Obtain an authorization code</h3>
-    <form class="form-signin" action={{auth_url}} method="get">
+    <h3>Step 2: Get an authorization code</h3>
+    <form class="form-signin" action={{auth-url}} method="get">
         Client Id:<br>
-        <input class="form-control" type="text" name="client_id" value={{client_id}}>
+        <input class="form-control" type="text" name="client_id" value={{client-id}}>
         <br>
         Redirect URI:<br>
-        <input class="form-control" type="text" name="redirect_uri" value={{redirect_uri}}>
+        <input class="form-control" type="text" name="redirect_uri" value={{redirect-uri}}>
         <br>
         Response Type:<br>
         <select name="response_type">
@@ -53,11 +53,9 @@
             <option value="launch">launch</option>
             <option value="launch/Patient">launch/Patient</option>
         </select>
+        <input type="hidden" class="form-control" type="text" name="state" value={{emr-system}}>
         <br><br>
-        EMR system:<br>
-        <input class="form-control" type="text" name="state" value={{emr-system}}>
-        <br>
-        <b>Target Auth URL: <code>{{auth_url}}</code></b>
+        <b>Target Auth URL: <code>{{auth-url}}</code></b>
         <br>
         <input type="submit" value="Submit">
     </form>

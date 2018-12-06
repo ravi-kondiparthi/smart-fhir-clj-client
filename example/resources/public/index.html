@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Initial Setup</title>
+<title>Select EHR</title>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet"/>
 <style>body {
@@ -31,16 +31,15 @@
 <body>
 <div class="form-signin">
     <h1> <code>smart-fhir-clj-client</code> demo</h1>
-    <h3>Step 1: Initialize Client Library</h3>
+    <h3>Step 1: Select EHR System</h3>
     <form class="form-signin" action="/authorize" method="get">
-        EHR System:<br>
+        EHR System:
         <select name="emr-system">
             <option value="epic">epic</option>
             <option value="hspc">hspc</option>
         </select>
         <br><br>
-        <br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" >
     </form>
 </div>
 </body>

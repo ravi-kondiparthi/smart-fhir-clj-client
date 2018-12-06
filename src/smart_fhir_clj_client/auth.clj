@@ -11,8 +11,8 @@
 (spec/def ::refresh_token string?)
 (spec/def ::token_type #{"Bearer"})
 (spec/def ::expires_in integer?)
-(spec/def ::response (spec/keys :req-un [::access_token
-                                         ::token_type]
+(spec/def ::response (spec/keys :req-un [::access_token]
+                                         ;::token_type]
                                 :opt-un [::refresh_token
                                          ::expires_in]))
 
@@ -43,6 +43,7 @@
                      (catch Exception e
                        (let [{:keys [status body] :as response} (ex-data e)]
                          (throw (ex-info (str "Unexpected Error - " body) {:retry true})))))]
+       (log/debug "Token: " (:body response))
        (validate-token (:body response)))))
        ;(let [token (:access_token response)
        ;      expires-in-seconds (:expires_in response)

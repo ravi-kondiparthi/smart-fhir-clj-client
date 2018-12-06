@@ -14,6 +14,7 @@
   </root>
 
 
+  <logger name="smart-fhir-clj-client" level="DEBUG" />
   <logger name="io.pedestal.http.cors" level="WARN" />
 
   <!-- To log pedestal internals, enable this and change ThresholdFilter to DEBUG

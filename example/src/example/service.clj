@@ -9,12 +9,25 @@
             [clojure.tools.logging :as log]
             [clojure.java.io :as io]
             [example.config :as config]
-            [smart-fhir-clj-client.fhir :as sfcc]))
+            [smart-fhir-clj-client.fhir :as sfcc]
+            [smart-fhir-clj-client.auth :as sfcc-auth]))
 
 
+(defn get-data
+  []
+  {:name ::get-data
+   :enter (fn [context]
+            (let [params (get-in context [:request :query-params])
+                  emr-system (:emr-system params)
+                  patientid (:code params)
+                  token (:token params)
+                  config ((keyword emr-system) (config/get-config-for-emr-system))
+                  client-id (:client-id config)]
+                  ;data (search)] ; TODO wire in search
+              (assoc context :response {:body (json/encode {:resourceType "PlaceHolder"})
+                                        :headers {"Content-Type" "application/json"}
+                                        :status  200})))})
 
-(def data-file (io/resource
-                 "select_resource.html" ))
 
 (defn token
   []
@@ -22,17 +35,18 @@
    :enter (fn [context]
             (let [params (get-in context [:request :query-params])
                   emr-system (:state params)
-                  ;;can get clientid and redirect url from system using emr-system
-                  html-data (slurp data-file)
-                  replace-data-token (clojure.string/replace html-data #"REPLACE_TOKEN" "valid-token")
-                  replace-data-patient (clojure.string/replace replace-data-token #"REPLACE_PATIENT_ID" "valid-patienid")
-                  replace-data-client-id (clojure.string/replace replace-data-token #"REPLACE_CLIENT_ID"
-                                                                "valid-clientid")
-                  ]
-              (println params)
-              (println (get-in context [:request :servlet-request]))
-              (assoc context :response {:status 200 :body replace-data-client-id
-                                        :headers {"Content-Type" "text/html"}})))})
+                  auth-code (:code params)
+                  config ((keyword emr-system) (config/get-config-for-emr-system))
+                  client-id (:client-id config)
+                  token (:access_token (sfcc-auth/get-token client-id (:redirect-uri config) auth-code))] ; not working about expiration, just grabbing token
+              (log/info "Authorize response:" params ", Token:" token)
+              (assoc context :response (ring-resp/response
+                                         (clostache/render-resource "public/select_resource_template.html"
+                                                                    {:client-id client-id
+                                                                     :token token
+                                                                     :emr-data-url (:base-url config)
+                                                                     :patient-id "foo"
+                                                                     :emr-system emr-system})))))})
 
 
 (defn init
@@ -40,29 +54,27 @@
   {:name ::init
    :enter (fn [context]
             (assoc context :response (-> (ring-resp/resource-response "index.html" {:root "public"})
-                                         (ring-resp/content-type "text/html")
-                                          )))})
+                                         (ring-resp/content-type "text/html"))))})
+
 
 
 (defn authorize
       []
       {:name  ::authorize
        :enter (fn [context]
-                (let [
-                      params (get-in context [:request :query-params])
+                (let [params (get-in context [:request :query-params])
                       emr-system (:emr-system params)
-                      config ((:key emr-system) (config/get-config-for-emr-system))
-                      client-id (:client_id config)
-                      redirect-uri (:redirect_uri config)
-                      base-url (:base_url config)]
+                      config ((keyword emr-system) (config/get-config-for-emr-system))
+                      client-id (:client-id config)
+                      base-url (:base-url config)]
                      (log/info params)
                      (sfcc/init {:client-id client-id
                                  :base-url base-url})
                      (assoc context :response (ring-resp/response
                                                 (clostache/render-resource "public/authorize_template.html"
-                                                                           {:client_id client-id
-                                                                            :redirect_uri redirect-uri
-                                                                            :auth_url (sfcc/get-authorize-url client-id)
+                                                                           {:client-id client-id
+                                                                            :redirect-uri (:redirect-uri config)
+                                                                            :auth-url (sfcc/get-authorize-url client-id)
                                                                             :emr-system emr-system})))))})
 
 
@@ -70,6 +82,7 @@
 
 (def routes #{["/" :get (conj common-interceptors (init))]
               ["/authorize" :get (conj common-interceptors (authorize))]
+              ["/data" :get (conj common-interceptors (get-data))]
               ["/epic/token/demo" :get (conj common-interceptors (token))]})
 
 
