@@ -1,20 +1,49 @@
 <!DOCTYPE html>
 <html>
+<title>Initial Setup</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<style>body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+.form-signin {
+    max-width: 700px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}</style>
+
+
+
 <body>
-
-<h2>HTML Forms</h2>
-
-<form action="/authorize" method="get">
-    EHR Base URL:<br>
-    <input type="text" name="base_url" value="https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/">
-    <br>
-    Client Id:<br>
-    <input type="text" name="client_id" value="">
-    <br>
-    Redirect URI:<br>
-    <input type="text" name="redirect_uri" value="https://localhost:9307/epic/token/demo">
-    <br><br>
-    <input type="submit" value="Initialize">
-</form>
+<div class="form-signin">
+    <h1> <code>smart-fhir-clj-client</code> demo</h1>
+    <h3>Step 1: initialize</h3>
+    <form class="form-signin" action="/authorize" method="get">
+        EHR Base URL:<br>
+        <input class="form-control" type="text" name="base_url" value="https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/">
+        <br>
+        Client Id:<br>
+        <input class="form-control" type="text" name="client_id" value="">
+        <br>
+        Redirect URI:<br>
+        <input class="form-control" type="text" name="redirect_uri" value="https://localhost:9307/epic/token/demo">
+        <br><br>
+        <input type="submit" value="Initialize">
+    </form>
+</div>
 </body>
 </html>
