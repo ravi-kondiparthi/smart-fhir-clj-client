@@ -8,6 +8,7 @@
             [clostache.parser :as clostache]
             [clojure.tools.logging :as log]
             [clojure.java.io :as io]
+            [example.config :as config]
             [smart-fhir-clj-client.fhir :as sfcc]))
 
 
@@ -20,6 +21,8 @@
   {:name ::token
    :enter (fn [context]
             (let [params (get-in context [:request :query-params])
+                  emr-system (:state params)
+                  ;;can get clientid and redirect url from system using emr-system
                   html-data (slurp data-file)
                   replace-data-token (clojure.string/replace html-data #"REPLACE_TOKEN" "valid-token")
                   replace-data-patient (clojure.string/replace replace-data-token #"REPLACE_PATIENT_ID" "valid-patienid")
@@ -27,7 +30,8 @@
                                                                 "valid-clientid")
                   ]
               (println params)
-              (assoc context :response {:status 200 :body replace-data
+              (println (get-in context [:request :servlet-request]))
+              (assoc context :response {:status 200 :body replace-data-client-id
                                         :headers {"Content-Type" "text/html"}})))})
 
 
@@ -44,10 +48,13 @@
       []
       {:name  ::authorize
        :enter (fn [context]
-                (let [params (get-in context [:request :query-params])
-                      client-id (:client_id params)
-                      redirect-uri (:redirect_uri params)
-                      base-url (:base_url params)]
+                (let [
+                      params (get-in context [:request :query-params])
+                      emr-system (:emr-system params)
+                      config ((:key emr-system) (config/get-config-for-emr-system))
+                      client-id (:client_id config)
+                      redirect-uri (:redirect_uri config)
+                      base-url (:base_url config)]
                      (log/info params)
                      (sfcc/init {:client-id client-id
                                  :base-url base-url})
@@ -55,7 +62,8 @@
                                                 (clostache/render-resource "public/authorize_template.html"
                                                                            {:client_id client-id
                                                                             :redirect_uri redirect-uri
-                                                                            :auth_url (sfcc/get-authorize-url client-id)})))))})
+                                                                            :auth_url (sfcc/get-authorize-url client-id)
+                                                                            :emr-system emr-system})))))})
 
 
 (def common-interceptors [(body-params/body-params) http/html-body])

@@ -33,16 +33,14 @@
     <h1> <code>smart-fhir-clj-client</code> demo</h1>
     <h3>Step 1: Initialize Client Library</h3>
     <form class="form-signin" action="/authorize" method="get">
-        EHR Base URL:<br>
-        <input class="form-control" type="text" name="base_url" value="https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/">
-        <br>
-        Client Id:<br>
-        <input class="form-control" type="text" name="client_id" value="">
-        <br>
-        Redirect URI:<br>
-        <input class="form-control" type="text" name="redirect_uri" value="https://localhost:9307/epic/token/demo">
+        EHR System:<br>
+        <select name="emr-system">
+            <option value="epic">epic</option>
+            <option value="hspc">hspc</option>
+        </select>
         <br><br>
-        <input type="submit" value="Initialize">
+        <br><br>
+        <input type="submit" value="Submit">
     </form>
 </div>
 </body>
