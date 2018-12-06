@@ -1,31 +1,65 @@
 <!DOCTYPE html>
 <html>
+
+<title>Authorize</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet"/>
+<style>body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+
+.form-signin {
+    max-width: 700px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}</style>
+
 <body>
 
-<h2>HTML Forms</h2>
 
-<form action={{auth_url}} method="get">
-    Client Id:<br>
-    <input type="text" name="client_id" value={{client_id}}>
-    <br>
-    Redirect URI:<br>
-    <input type="text" name="redirect_uri" value="">
-    <br>
-    Response Type:<br>
-    <select name="response_type">
-        <option value="code">code</option>
-    </select>
-    <br>
-    Scope:<br>
-    <select name="scope">
-        <option value="launch">launch</option>
-        <option value="launch/Patient">launch/Patient</option>
-    </select>
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
+<div class="form-signin">
+    <h1> <code>smart-fhir-clj-client</code> demo</h1>
+    <h3>Step 2: obtain an authorization code</h3>
+    <form class="form-signin" action={{auth_url}} method="get">
+        Client Id:<br>
+        <input class="form-control" type="text" name="client_id" value={{client_id}}>
+        <br>
+        Redirect URI:<br>
+        <input class="form-control" type="text" name="redirect_uri" value={{redirect_uri}}>
+        <br>
+        Response Type:<br>
+        <select name="response_type">
+            <option value="code">code</option>
+        </select>
+        <br>
+        Scope:<br>
+        <select name="scope">
+            <option value="launch">launch</option>
+            <option value="launch/Patient">launch/Patient</option>
+        </select>
+        <br><br>
 
-<p>Hit "Submit" button to obtain an authorization code from <code>{{auth_url}}</code></p>
+        <b>Target Auth URL: <code>{{auth_url}}</code></b>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
 
 </body>
 </html>

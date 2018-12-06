@@ -34,6 +34,7 @@
        :enter (fn [context]
                 (let [params (get-in context [:request :query-params])
                       client-id (:client_id params)
+                      redirect-uri (:redirect_uri params)
                       base-url (:base_url params)]
                      (log/info params)
                      (sfcc/init {:client-id client-id
@@ -41,6 +42,7 @@
                      (assoc context :response (ring-resp/response
                                                 (clostache/render-resource "public/authorize_template.html"
                                                                            {:client_id client-id
+                                                                            :redirect_uri redirect-uri
                                                                             :auth_url (sfcc/get-authorize-url client-id)})))))})
 
 
