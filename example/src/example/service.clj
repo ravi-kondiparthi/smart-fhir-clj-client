@@ -19,11 +19,13 @@
    :enter (fn [context]
             (let [params (get-in context [:request :query-params])
                   emr-system (:emr-system params)
-                  patientid (:code params)
+                  patient-id (:patient-id params)
                   token (:token params)
+                  resource (:resource params)
                   config ((keyword emr-system) (config/get-config-for-emr-system))
                   client-id (:client-id config)]
                   ;data (search)] ; TODO wire in search
+              (log/info params)
               (assoc context :response {:body (json/encode {:resourceType "PlaceHolder"})
                                         :headers {"Content-Type" "application/json"}
                                         :status  200})))})
@@ -38,14 +40,14 @@
                   auth-code (:code params)
                   config ((keyword emr-system) (config/get-config-for-emr-system))
                   client-id (:client-id config)
-                  token (:access_token (sfcc-auth/get-token client-id (:redirect-uri config) auth-code))] ; not working about expiration, just grabbing token
+                  token (sfcc-auth/get-token client-id (:redirect-uri config) auth-code)]
               (log/info "Authorize response:" params ", Token:" token)
               (assoc context :response (ring-resp/response
                                          (clostache/render-resource "public/select_resource_template.html"
                                                                     {:client-id client-id
-                                                                     :token token
+                                                                     :token (:access_token token)
                                                                      :emr-data-url (:base-url config)
-                                                                     :patient-id "foo"
+                                                                     :patient-id (:patient token)
                                                                      :emr-system emr-system})))))})
 
 

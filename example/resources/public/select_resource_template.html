@@ -39,18 +39,17 @@
         <!--<input class="form-control" type="text" name="client_id" value={{client-id}}>-->
         <!--<br>-->
         OAuth Token:<br>
-        <input class="form-control" type="token" name="token" value={{token}}>
+        <input class="form-control" type="token" name="token" value={{token}} readonly>
         <br>
         Patient Id:<br>
-        <input class="form-control" type="patientid" name="patientid" value={{patient-id}}>
+        <input class="form-control" type="text" name="patient-id" value={{patient-id}} readonly>
         <input type="hidden" class="form-control" type="text" name="emr-system" value={{emr-system}}>
-        <!--<br>-->
-        <!--resource:<br>-->
-        <!--<input type="resource" name="resource" value="">-->
-        <!--<select name="resource">-->
-            <!--<option value="Encounter">epic</option>-->
-            <!--<option value="AllergyIntollerance">hspc</option>-->
-        <!--</select>-->
+        <br>
+        Resource:<br>
+        <select name="resource">
+            <option value="Observation">Observation</option>
+            <option value="AllergyIntollerance">AllergyIntollerance</option>
+        </select>
         <br><br>
         <b>EHR Data URL: <code>{{emr-data-url}}</code></b>
         <br>

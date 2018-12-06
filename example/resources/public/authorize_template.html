@@ -38,22 +38,18 @@
     <h3>Step 2: Get an authorization code</h3>
     <form class="form-signin" action={{auth-url}} method="get">
         Client Id:<br>
-        <input class="form-control" type="text" name="client_id" value={{client-id}}>
+        <input class="form-control" type="text" name="client_id" value={{client-id}} readonly>
         <br>
         Redirect URI:<br>
-        <input class="form-control" type="text" name="redirect_uri" value={{redirect-uri}}>
-        <br>
-        Response Type:<br>
-        <select name="response_type">
-            <option value="code">code</option>
-        </select>
+        <input class="form-control" type="text" name="redirect_uri" value={{redirect-uri}} readonly>
         <br>
         Scope:<br>
         <select name="scope">
             <option value="launch">launch</option>
             <option value="launch/Patient">launch/Patient</option>
         </select>
-        <input type="hidden" class="form-control" type="text" name="state" value={{emr-system}}>
+        <input type="hidden" type="text" name="response_type" value="code">
+        <input type="hidden" type="text" name="state" value={{emr-system}}>
         <br><br>
         <b>Target Auth URL: <code>{{auth-url}}</code></b>
         <br>

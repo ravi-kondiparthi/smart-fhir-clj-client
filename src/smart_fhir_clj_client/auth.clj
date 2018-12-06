@@ -4,15 +4,14 @@
             [smart-fhir-clj-client.util :as util]
             [clojure.tools.logging :as log]
             [clojure.spec.alpha :as spec]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import (org.omg.CORBA.DynAnyPackage Invalid)))
 
 
 (spec/def ::access_token string?)
 (spec/def ::refresh_token string?)
-(spec/def ::token_type #{"Bearer"})
 (spec/def ::expires_in integer?)
 (spec/def ::response (spec/keys :req-un [::access_token]
-                                         ;::token_type]
                                 :opt-un [::refresh_token
                                          ::expires_in]))
 
@@ -23,7 +22,7 @@
     (if (spec/valid? s token)
       token
       (let [explain (spec/explain-str s token)]
-        (throw (ex-info (str "Invalid Token Response - " (util/scrub-explain-str explain)) {:retry false}))))))
+        (throw (ex-info (str " Invalid Token Response - " (util/scrub-explain-str explain)) {:retry false}))))))
 
 
 (defn get-token
