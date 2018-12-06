@@ -14,7 +14,7 @@
   {:name ::token
    :enter (fn [context]
             (let [params (get-in context [:request :query-params])]
-              (println params)
+              (log/info "Authorization response params:" params)
               ; TODO next step is to exchange auth code for token
               (assoc context :response {:body (json/encode params)
                                         :headers {"Content-Type" "application/json"}
