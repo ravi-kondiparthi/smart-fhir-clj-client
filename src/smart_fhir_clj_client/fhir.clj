@@ -2,7 +2,9 @@
   (:require [clojure.tools.logging :as log]
             [smart-fhir-clj-client.request :as req]
             [clj-hl7-fhir.core :as fhir-client]
-            [clojure.string :as str]))
+            [camel-snake-kebab.core :as csk]
+            [clojure.string :as str]
+            [smart-fhir-clj-client.request :as req]))
 
 (def conformance-map (atom {}))
 
@@ -21,7 +23,7 @@
    (if-not url
      (log/error "Metadata URL is Empty!")
      (let [response (try
-                      (req/get-json  (str url "/metadata") {:query-params {:_format "application/json"}})
+                      (req/get-json (str url "/metadata") {:query-params {:_format "application/json"}})
                       (catch Exception e
                         (throw (Exception. "Meta-Data Get Exception" e))))]
        (:body response)))))
@@ -111,3 +113,20 @@
     (fhir-client/with-options {:oauth-token token}
                               (fhir-client/search-and-fetch (get-base-url client-id) resource-type where-condition search-params))))
 
+
+
+(defn get-resource-by-patient-id
+  [client-id token type id]
+  (let [base-url (get-base-url client-id)
+        url (str base-url  (name (csk/->PascalCase type)))
+        response (try
+                   (req/get-json url
+                                         {:oauth-token token
+                                          :query-params {:patient id
+                                                         :_format "application/json"}})
+                   (catch Exception e
+                     (let [{:keys [status reason-phrase]} (ex-data e)]
+                       (log/errorf "Exception: get-resource-by-patient-id Status: %s error-reason: %s" status reason-phrase)
+                       {:body {:error (format "Exception: get-resource-by-patient-id  Status: %s error-reason: %s" status reason-phrase)}})))]
+
+    (:body response)))
