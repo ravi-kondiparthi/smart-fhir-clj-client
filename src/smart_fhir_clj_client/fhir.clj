@@ -17,15 +17,13 @@
         (throw (Exception. "base-url is empty. Initialization Error. "))))
     (throw (Exception. "client-id is NULL"))))
 
+
 (defn get-metadata
   "return an map of SMART FHIR metadata details include authorize , token endpoint URLs and resource search details."
   ([url]
    (if-not url
      (log/error "Metadata URL is Empty!")
-     (let [response (try
-                      (req/get-json (str url "/metadata") {:query-params {:_format "application/json"}})
-                      (catch Exception e
-                        (throw (Exception. "Meta-Data Get Exception" e))))]
+     (let [response (req/get-json (str url "/metadata"))]
        (:body response)))))
 
 
@@ -73,7 +71,8 @@
                  (swap! conformance-map assoc (keyword client-id) data-map)
                  (log/infof "Initialization done for client-id %s" client-id)))
             (catch Exception e
-              (.printStackTrace e))))))))
+              (log/error "Failed to initialize: " (.getMessage e))
+              (throw (ex-info (str "Failed to initialize - " (.getMessage e)) {:retry true})))))))))
 
 
 

@@ -68,14 +68,17 @@
                       emr-system (:emr-system params)
                       config ((keyword emr-system) (config/get-config-for-emr-system))
                       client-id (:client-id config)
+                      client-secret? (:client-secret config)
                       base-url (:base-url config)]
                      (log/info params)
                      (sfcc/init {:client-id client-id
+                                 :client-secret client-secret?
                                  :base-url base-url})
                      (assoc context :response (ring-resp/response
                                                 (clostache/render-resource "public/authorize_template.html"
                                                                            {:client-id client-id
                                                                             :redirect-uri (:redirect-uri config)
+                                                                            :base-url base-url
                                                                             :auth-url (sfcc/get-authorize-url client-id)
                                                                             :emr-system emr-system})))))})
 

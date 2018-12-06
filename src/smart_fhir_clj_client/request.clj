@@ -12,7 +12,8 @@
 (defn get-json
   ([url] (get-json url {}))
   ([url request-params]
-   (client/get url (merge {:as :json}
+   (client/get url (merge {:content-type :json
+                           :as :json}
                           default-client-options
                           request-params))))
 
