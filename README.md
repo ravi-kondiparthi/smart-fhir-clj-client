@@ -35,8 +35,8 @@ To initialize the client, call the `init` function passing a configuration map:
 
 Example:
 
-    (initialize {:client-id "my-test-client-id"
-                 :metadata-url https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/metadata})
+    (init {:client-id "my-test-client-id"
+           :base-url https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/metadata})
 
 ### Read
 Resources can be retrieved by their FHIR resource id. The `get-resource` function takes the resource type and ID and returns a FHIR resource. Alternatively, you can specify a relative resource URL instead of separate type and ID arguments.

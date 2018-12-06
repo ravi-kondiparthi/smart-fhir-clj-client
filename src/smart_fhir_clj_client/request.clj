@@ -15,3 +15,11 @@
    (client/get url (merge {:as :json}
                           default-client-options
                           request-params))))
+
+
+(defn post
+  ([url] (post url {}))
+  ([url request-params]
+   (client/post url (merge {:as :json}
+                           default-client-options
+                           request-params))))

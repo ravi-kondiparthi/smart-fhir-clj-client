@@ -63,7 +63,7 @@
                     data-map {:base-url base-url
                               :client-id client-id
                               :client-secret client-secret
-                              :client-type (if client-secret "client-confidential-symmetric" "client-public")
+                              :client-type (if client-secret :confidential :public)
                               :auth-url (:authorize conformance)
                               :token-url (:token conformance)
                               :support-resource-types (:resource conformance)
@@ -85,13 +85,6 @@
     {:error "Invalid Client Id"}))
 
 
-
-(defn get-token
-  "TODO"
-  []
-  "lJd0Sow_-IFxerXswWfM6ZYjvNV7fkt3ONlvBWTxvLvIuIXoAlkTQXuvph6DMEAqIiwJ1xb4XuUbn8G-gMjvGWL_-8T9it6646nQtSihKYFrkfAoNuLmYVymeSHXdskk")
-
-
 (defn get-resource
   "Retrieve a resource by its FHIR resource id. returns Resource or nil if not found."
   ([client-id token resource-type resource-id]
@@ -100,6 +93,7 @@
   ([client-id token relative-url]
    (fhir-client/with-options {:oauth-token token}
      (fhir-client/get-resource (get-base-url client-id) relative-url))))
+
 
 (defn search-resource
   "Retrieve a resource by its FHIR resource type.."
