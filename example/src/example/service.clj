@@ -23,10 +23,10 @@
                   token (:token params)
                   resource (:resource params)
                   config ((keyword emr-system) (config/get-config-for-emr-system))
-                  client-id (:client-id config)]
-                  ;data (search)] ; TODO wire in search
+                  client-id (:client-id config)
+                  data (sfcc/get-resource-by-patient-id client-id token resource patient-id)]
               (log/info params)
-              (assoc context :response {:body (json/encode {:resourceType "PlaceHolder"})
+              (assoc context :response {:body (json/encode data)
                                         :headers {"Content-Type" "application/json"}
                                         :status  200})))})
 

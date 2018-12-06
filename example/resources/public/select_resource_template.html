@@ -35,9 +35,6 @@
     <h1><code>smart-fhir-clj-client</code> demo</h1>
     <h3>Step 3: Get Data</h3>
     <form class="form-signin" action="/data" method="get">
-        <!--Client Id:<br>-->
-        <!--<input class="form-control" type="text" name="client_id" value={{client-id}}>-->
-        <!--<br>-->
         OAuth Token:<br>
         <input class="form-control" type="token" name="token" value={{token}} readonly>
         <br>
@@ -47,8 +44,8 @@
         <br>
         Resource:<br>
         <select name="resource">
-            <option value="Observation">Observation</option>
-            <option value="AllergyIntollerance">AllergyIntollerance</option>
+            <option value="Immunization">Immunization</option>
+            <option value="AllergyIntolerance">AllergyIntolerance</option>
         </select>
         <br><br>
         <b>EHR Data URL: <code>{{emr-data-url}}</code></b>

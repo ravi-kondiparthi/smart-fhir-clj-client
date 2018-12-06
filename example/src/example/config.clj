@@ -11,5 +11,5 @@
           :base-url "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/"}
    :hspc {:client-id "978599b0-c31f-402f-930a-c8b3f573ec86"
           :client-secret "I_ej2cM0LxMTubE4tCSD-kgUzMUA3azEzi52vrRqfduoZPtGSe26M54a53DMeMqqY-NL_SGA9KIDU6_LHNWvg"
-          :redirect-uri ""
+          :redirect-uri "https://localhost:9307/epic/token/demo"
           :base-url "https://api-v5-dstu2.hspconsortium.org/ravSandBox/data/"}})
