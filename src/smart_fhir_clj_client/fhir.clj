@@ -100,3 +100,12 @@
   ([client-id token relative-url]
    (fhir-client/with-options {:oauth-token token}
      (fhir-client/get-resource (get-base-url client-id) relative-url))))
+
+(defn search-resource
+  "Retrieve a resource by its FHIR resource type.."
+  [client-id token resource-type where-condition search-params fetch-all]
+  (if fetch-all
+    (fhir-client/with-options {:oauth-token token}
+                              (fhir-client/search (get-base-url client-id) resource-type where-condition search-params))
+    (fhir-client/with-options {:oauth-token token}
+                              (fhir-client/search-and-fetch (get-base-url client-id) resource-type where-condition search-params))))
