@@ -4,8 +4,7 @@
             [smart-fhir-clj-client.util :as util]
             [clojure.tools.logging :as log]
             [clojure.spec.alpha :as spec]
-            [clojure.string :as string])
-  (:import (org.omg.CORBA.DynAnyPackage Invalid)))
+            [clojure.string :as string]))
 
 
 (spec/def ::access_token string?)
