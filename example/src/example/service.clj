@@ -88,7 +88,7 @@
 (def routes #{["/" :get (conj common-interceptors (init))]
               ["/authorize" :get (conj common-interceptors (authorize))]
               ["/data" :get (conj common-interceptors (get-data))]
-              ["/epic/token/demo" :get (conj common-interceptors (token))]})
+              ["/epic/token/demo" :get (conj common-interceptors (token))]}) ; this is the callback uri, must match config.clj!!
 
 
 
