@@ -85,6 +85,13 @@
     {:error "Invalid Client Id"}))
 
 
+(defn get-authorize-url
+  [client-id]
+  (if client-id
+    (:auth-url ((keyword client-id) @conformance-map))
+    {:error "Invalid Client Id"}))
+
+
 (defn get-resource
   "Retrieve a resource by its FHIR resource id. returns Resource or nil if not found."
   ([client-id token resource-type resource-id]

@@ -4,28 +4,17 @@
 
 <h2>HTML Forms</h2>
 
-<form action="https://open-ic.epic.com/argonaut/oauth2/authorize" method="get">
+<form action="/authorize" method="get">
+    EHR Base URL:<br>
+    <input type="text" name="base_url" value="https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/">
+    <br>
     Client Id:<br>
     <input type="text" name="client_id" value="">
     <br>
     Redirect URI:<br>
-    <input type="text" name="redirect_uri" value="">
-    <br>
-    Response Type:<br>
-    <select name="response_type">
-        <option value="code">code</option>
-    </select>
-    <br>
-    Scope:<br>
-    <select name="scope">
-        <option value="launch">launch</option>
-        <option value="launch/Patient">launch/Patient</option>
-    </select>
+    <input type="text" name="redirect_uri" value="https://localhost:9307/epic/token/demo">
     <br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Initialize">
 </form>
-
-<p>Hit "Submit" button, the form-data will be sent to the Epic Sandbox authorize server: <code>https://open-ic.epic.com/argonaut/oauth2/authorize</code>".</p>
-
 </body>
 </html>

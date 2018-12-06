@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>HTML Forms</h2>
+
+<form action={{auth_url}} method="get">
+    Client Id:<br>
+    <input type="text" name="client_id" value={{client_id}}>
+    <br>
+    Redirect URI:<br>
+    <input type="text" name="redirect_uri" value="">
+    <br>
+    Response Type:<br>
+    <select name="response_type">
+        <option value="code">code</option>
+    </select>
+    <br>
+    Scope:<br>
+    <select name="scope">
+        <option value="launch">launch</option>
+        <option value="launch/Patient">launch/Patient</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<p>Hit "Submit" button to obtain an authorization code from <code>{{auth_url}}</code></p>
+
+</body>
+</html>
