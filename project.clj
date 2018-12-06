@@ -1,4 +1,4 @@
-(defproject smart-fhir-clj-client "1.0.0"
+(defproject smart-fhir-clj-client "1.0.0-SNAPSHOT"
   :description "SMART FHIR clojure client"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
