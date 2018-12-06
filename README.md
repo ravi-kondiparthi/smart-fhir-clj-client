@@ -38,18 +38,24 @@ Example:
     (init {:client-id "my-test-client-id"
            :base-url https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/metadata})
 
+### Authorize
+After initializing the client, you will need to obtain an authorization code from the EHR system. To ass
+
+
+    (get-authorize-url)
+ 
 ### Read
 Resources can be retrieved by their FHIR resource id. The `get-resource` function takes the resource type and ID and returns a FHIR resource. Alternatively, you can specify a relative resource URL instead of separate type and ID arguments.
 
 Examples:
 
-    (get-resource :Patient "101")
+    (get-resource "" :Patient "101")
     (get-resource "Patient" "101")
     (get-resource "Patient/101")
 
 Example including sample response from Epic Sandbox:
 
-    (get-resource :patient "Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB")
+    (get-resource "my-client-id" "valid-oauth-token" :patient "Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB")
     
     {:address [{:use "home", :line ["1979 Milky Way Dr."], :city "Verona", :state "WI", :postalCode "53593", :country "US"}
                {:use "temp",
