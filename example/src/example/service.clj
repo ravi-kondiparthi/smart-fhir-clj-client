@@ -2,7 +2,8 @@
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [ring.util.response :as ring-resp]))
 
 
 (defn token
@@ -15,9 +16,17 @@
                                         :headers {"Content-Type" "application/json"}
                                         :status  200})))})
 
+(defn index
+  []
+  {:name ::index
+   :enter (fn [context]
+            (assoc context :response (-> (ring-resp/resource-response "index.html" {:root "public"})
+                                         (ring-resp/content-type "text/html"))))})
+
 
 (def common-interceptors [(body-params/body-params) http/html-body])
-(def routes #{["/epic/token/demo" :get (conj common-interceptors (token))]})
+(def routes #{["/" :get (conj common-interceptors (index))]
+              ["/epic/token/demo" :get (conj common-interceptors (token))]})
 
 
 

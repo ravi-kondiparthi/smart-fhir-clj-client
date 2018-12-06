@@ -7,12 +7,12 @@
             [clojure.string :as string]))
 
 
-; TODO this is a partial validation
 (spec/def ::access_token string?)
 (spec/def ::refresh_token string?)
 (spec/def ::token_type #{"Bearer"})
-(spec/def ::expires_in string?)
-(spec/def ::response (spec/keys :req-un [::access_token]
+(spec/def ::expires_in integer?)
+(spec/def ::response (spec/keys :req-un [::access_token
+                                         ::token_type]
                                 :opt-un [::refresh_token
                                          ::expires_in]))
 
@@ -26,28 +26,23 @@
         (throw (ex-info (str "Invalid Token Response - " (util/scrub-explain-str explain)) {:retry false}))))))
 
 
-
-;(fhir/initialize "https://open-ic.epic.com/argonaut/api/FHIR/Argonaut/" "d23d75f4-7f77-49f3-809d-ef5ca0983e9b")
-; (get-token "d23d75f4-7f77-49f3-809d-ef5ca0983e9b" "https://localhost:9307/epic/token/demo" "3PN1py73wEmXTiQfb90XxGA4cGoZ55fMvRnNneU6t3df22I4KUJ7tT_chHjRCRlrzC4Mz77vRuLzyGF7TPyar-94vNZvVwhHX9u_P7xFCl761BQmgarN1Qt3ueb_ETZ6")
-
 (defn get-token
   "Exchange an Authorization code for a token.
-
    References: http://hl7.org/fhir/smart-app-launch/index.html#step-3-app-exchanges-authorization-code-for-access-token
    Note: A given developer app registered with an EHR system can have multiple redirect uris..."
   [client-id redirect-uri auth-code]
-  (let [token-url @fhir/token-url
-        params {:form-params {:grant_type "authorization_code"
-                              :code auth-code
-                              :redirect_uri redirect-uri
-                              :client_id client-id}}]; TODO only send client_id for public, omit for confidential app
+  (let [config ((keyword client-id) @fhir/conformance-map)
+        token-url (:token-url config)
+        base-form-params {:grant_type "authorization_code"
+                          :code auth-code
+                          :redirect_uri redirect-uri}
+        form-params (if (= :public (:client-type config)) (assoc base-form-params :client_id client-id))]
     (log/debug "Exchanging auth code for token: " token-url)
     (let [response (try
-                     (req/post token-url params)
+                     (req/post token-url {:form-params form-params})
                      (catch Exception e
                        (let [{:keys [status body] :as response} (ex-data e)]
-                         (if (and (= 400 status))
-                           (throw (ex-info (str "Bad Request - " body) {:retry true}))))))]
+                         (throw (ex-info (str "Unexpected Error - " body) {:retry true})))))]
        (validate-token (:body response)))))
        ;(let [token (:access_token response)
        ;      expires-in-seconds (:expires_in response)
