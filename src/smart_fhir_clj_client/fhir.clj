@@ -1,9 +1,19 @@
 (ns smart-fhir-clj-client.fhir
   (:require [clojure.tools.logging :as log]
             [smart-fhir-clj-client.request :as req]
-            [clj-hl7-fhir.core :as fhir-client]))
+            [clj-hl7-fhir.core :as fhir-client]
+            [clojure.string :as str]))
 
 (def conformance-map (atom {}))
+
+(defn get-base-url
+  [client-id]
+  (if client-id
+    (let [base-url (:base-url ((keyword client-id) @conformance-map))]
+      (if-not (or (nil? base-url) (str/blank? base-url))
+        base-url
+        (throw (Exception. "base-url is empty. Initialization Error. "))))
+    (throw (Exception. "client-id is NULL"))))
 
 (defn get-metadata
   "return an map of SMART FHIR metadata details include authorize , token endpoint URLs and resource search details."
@@ -17,7 +27,7 @@
        (:body response)))))
 
 
-(defn get-value-url-from-extension
+(defn- get-value-url-from-extension
   [extension-list type]
   (:valueUri (first (filter #(= type (:url %)) extension-list))))
 
@@ -38,40 +48,43 @@
                       (mapv #(:type %)))]
     (merge urls {:resource resource})))
 
+(defn init
+  "Initialize the client"
+  [input]
+  (let [{:keys [base-url client-id client-secret]} input]
+    (if (or (empty? input) (nil? base-url) (nil? client-id))
+      (log/error "Initialization Failed. Required Field is Empty!! ")
+      (when (nil? ((keyword client-id) @conformance-map))
+        (locking conformance-map
+          (try
+            (when (nil? ((keyword client-id) @conformance-map))
+              (let [meta-data (get-metadata base-url)
+                    conformance (get-data-from-conformance meta-data)
+                    data-map {:base-url base-url
+                              :client-id client-id
+                              :client-secret client-secret
+                              :client-type (if client-secret "client-confidential-symmetric" "client-public")
+                              :auth-url (:authorize conformance)
+                              :token-url (:token conformance)
+                              :support-resource-types (:resource conformance)
+                              :initialize-status true}]
+                 (swap! conformance-map assoc (keyword client-id) data-map)
+                 (log/infof "Initialization done for client-id %s" client-id)))
+            (catch Exception e
+              (.printStackTrace e))))))))
 
-(defn initialize
-  "sets up variables base_uri,supported resource types authorization url , token url and mode(public or confidential)"
- ([base-url-request client-id-request client-secret-request]
-  (if (or (nil? base-url-request) (nil? client-id-request))  "metadata-url and client-id-request are required")
-  (when (nil? ((keyword client-id-request) @conformance-map))
-    (locking
-      (let [meta-data (get-metadata base-url-request)
-            conformance (get-data-from-conformance meta-data)
-            data-map {:base-url base-url-request
-                      :client-id client-id-request
-                      :client-secret client-secret-request
-                      :client-type (if client-secret-request "client-confidential-symmetric" "client-public")
-                      :auth-url (:authorize conformance)
-                      :token-url (:token conformance)
-                      :support-resource-types (:resource conformance)
-                      :initialize-status true}]
-        (swap! conformance-map assoc (keyword client-id-request) data-map))
-      (log/infof "Initialization done for client ID %s" client-id-request))))
 
 
- ([base-url client-id-request]
-  (initialize base-url client-id-request nil)))
 
 
-(defn get-initialized-value
-  []
-  {:base-url @base-url
-   :client-id @client-id
-   :client-type @client-type
-   :auth-url @auth-url
-   :token-url @token-url
-   :support-resource-types @supported-resource-types
-   :initialize-status @initialized})
+(defn get-init-value
+  "return `Conformance` details as a map"
+  [client-id]
+  (if client-id
+    ((keyword client-id) @conformance-map)
+    {:error "Invalid Client Id"}))
+
+
 
 (defn get-token
   "TODO"
@@ -91,10 +104,10 @@
 
 (defn search-resource
   "Retrieve a resource by its FHIR resource type.."
-  [resource-type where-condition search-params fetch-all]
-  (if fetch-all
-     (fhir-client/with-options {:oauth-token (get-token)}
-                               (fhir-client/search @base-url resource-type where-condition search-params))
-     (fhir-client/with-options {:oauth-token (get-token)}
-                               (fhir-client/search-and-fetch @base-url resource-type where-condition search-params))))
+  ([client-id token resource-type resource-id]
+   (fhir-client/with-options {:oauth-token token}
+     (fhir-client/get-resource (get-base-url client-id) resource-type resource-id)))
+  ([client-id token relative-url]
+   (fhir-client/with-options {:oauth-token token}
+     (fhir-client/get-resource (get-base-url client-id) relative-url))))
 
