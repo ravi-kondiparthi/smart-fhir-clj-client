@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [io.pedestal/pedestal.service "0.5.4"]
                  [io.pedestal/pedestal.jetty "0.5.4"]
+                 [enlive "1.1.5"]
                  [cheshire "5.8.0"]]
 
   :min-lein-version "2.0.0"
