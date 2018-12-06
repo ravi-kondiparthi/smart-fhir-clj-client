@@ -94,13 +94,12 @@
 
 (defn get-resource
   "Retrieve a resource by its FHIR resource id. returns Resource or nil if not found."
-  ([resource-type resource-id]
-   (fhir-client/with-options {:oauth-token (get-token)}
-                             (fhir-client/get-resource @base-url resource-type resource-id)))
-  ([relative-url]
-   (fhir-client/with-options {:oauth-token (get-token)}
-     (fhir-client/get-resource @base-url relative-url))))
-
+  ([client-id token resource-type resource-id]
+   (fhir-client/with-options {:oauth-token token}
+     (fhir-client/get-resource (get-base-url client-id) resource-type resource-id)))
+  ([client-id token relative-url]
+   (fhir-client/with-options {:oauth-token token}
+     (fhir-client/get-resource (get-base-url client-id) relative-url))))
 
 (defn search-resource
   "Retrieve a resource by its FHIR resource type.."
