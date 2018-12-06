@@ -3,17 +3,12 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [cheshire.core :as json]
-<<<<<<< HEAD
+            [clojure.java.io :as io]
             [ring.util.response :as ring-resp]
             [clostache.parser :as clostache]
             [clojure.tools.logging :as log]
-            [smart-fhir-clj-client.fhir :as sfcc]))
-=======
-            [net.cgrand.enlive-html :as html]
             [clojure.java.io :as io]
-            [ring.util.response :as ring-resp]))
-;; Define the template
->>>>>>> select resource html page
+            [smart-fhir-clj-client.fhir :as sfcc]))
 
 
 
@@ -32,7 +27,6 @@
                                                                 "valid-clientid")
                   ]
               (println params)
-
               (assoc context :response {:status 200 :body replace-data
                                         :headers {"Content-Type" "text/html"}})))})
 
@@ -65,6 +59,7 @@
 
 
 (def common-interceptors [(body-params/body-params) http/html-body])
+
 (def routes #{["/" :get (conj common-interceptors (init))]
               ["/authorize" :get (conj common-interceptors (authorize))]
               ["/epic/token/demo" :get (conj common-interceptors (token))]})
