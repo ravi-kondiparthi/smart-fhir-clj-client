@@ -117,7 +117,7 @@
 (defn get-resource-by-patient-id
   [client-id token type id]
   (let [base-url (get-base-url client-id)
-        url (str base-url  (name (csk/->PascalCase type)))
+        url (str base-url "/" (name (csk/->PascalCase type)))
         response (try
                    (req/get-json url
                                          {:oauth-token token

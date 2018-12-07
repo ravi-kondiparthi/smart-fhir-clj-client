@@ -34,7 +34,8 @@
         base-form-params {:grant_type "authorization_code"
                           :code auth-code
                           :redirect_uri redirect-uri}
-        form-params (if (= :public (:client-type config)) (assoc base-form-params :client_id client-id))]
+        form-params (if (= :public (:client-type config)) (assoc base-form-params :client_id client-id)
+                                                          (assoc base-form-params :basic-auth [client-id (:client-secret config)]))]
     (log/debug "Exchanging auth code for token: " token-url)
     (let [response (try
                      (req/post token-url {:form-params form-params})
