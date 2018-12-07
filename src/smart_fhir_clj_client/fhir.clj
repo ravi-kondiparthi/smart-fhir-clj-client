@@ -119,10 +119,8 @@
   (let [base-url (get-base-url client-id)
         url (str base-url  (name (csk/->PascalCase type)))
         response (try
-                   (req/get-json url
-                                         {:oauth-token token
-                                          :query-params {:patient id
-                                                         :_format "application/json"}})
+                   (req/get-json url {:oauth-token token
+                                      :query-params {:patient id}})
                    (catch Exception e
                      (let [{:keys [status reason-phrase]} (ex-data e)]
                        (log/errorf "Exception: get-resource-by-patient-id Status: %s error-reason: %s" status reason-phrase)
