@@ -1,7 +1,7 @@
 # Example App
 Clojure pedestal service the hosts the redirect uri.
 
-DEMO CODE ONLY - NOT SUITABLE/SAFE FOR PRODUCTION
+**!! DEMO CODE ONLY - NOT SUITABLE/SAFE FOR PRODUCTION !!** 
 
 1. Install `smart-on-fhir-clj-client` in your local maven repo: run `lein install` from parent directory
 1. Update `src/example/config.clj` with appropriate client ids and callback uris

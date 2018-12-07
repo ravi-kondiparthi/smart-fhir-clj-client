@@ -21,12 +21,14 @@ Only supports searching for all resources of a given type for the patient.
 
 ## Roadmap
 - expand searching functionality
+- address `refresh-token` functionality
 
 
 ## How to Use
 ### Leiningen
 
     [smart-fhir-clj-client "1.0.0"]
+
 
 ### Initialize
 To initialize the client, call the `init` function passing a configuration map: 
@@ -43,7 +45,7 @@ Example:
 ### Authorize
 After initializing the client, you will need to obtain an authorization code from the EHR system. See http://www.hl7.org/fhir/smart-app-launch/#step-1-app-asks-for-authorization for details on this step.
 
-A helper method provides the authorization url (parsed from the EHR systems conformance):
+A helper method provides the authorization url (parsed from the EHR system's conformance):
 
     (get-authorize-url "my-test-client-id")
     
@@ -51,10 +53,10 @@ A helper method provides the authorization url (parsed from the EHR systems conf
 ### Get Token 
 With an authorization code, the next step is to exchange it for an OAuth token. 
      
-The auth module provide a function to retrieve an OAuth token given the `client-id`, `redirect-uri`, and `authorization-code`:
+The auth module (`smart-fhir-clj-client.auth`) provides a function to retrieve an OAuth token given the `client-id`, `redirect-uri` and `authorization-code`:
  
-    (get-token "my-test-client-id" "redirect-url" "authorization-code")
-    
+    (get-token "my-test-client-id" "https://localhost:9307/epic/token/demo" "authorization-code")
+  
 Note that the OAuth token contains the patient id. Sample OAuth token (from Epic sandbox): 
 
     {:access_token fIGS4bgblD-O4oTBHGHnekDx5H6AgzU_J5ezYDYcN5FrkPjLj7EXvd0mOSKMtUCZQHPfc6StoG_U1_Y9RyLb1Tra3II4B8hlBS61-GsB9lhybjDP-33NxUGah7VM11G7, 
